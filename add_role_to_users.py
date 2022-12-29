@@ -32,7 +32,7 @@ def add_role(role, user_list):
     
             # Check if user already has this role. If so we can skip the rest.
             if role_id in role_ids:
-                print("User already has this role. Skipping.")
+                print("Skipping...user already has role")
             else:
                 # Append the role ID to the current list
                 role_ids.append(role_id)
@@ -94,7 +94,7 @@ def lookup_user_id_and_roles(user):
    
     # Grab each of the each role IDs
     roleobjs = userobj.get("roles")
-    print("Current # of roles for this user is " + str(len(roleobjs)))
+    print("Current # of roles is " + str(len(roleobjs)))
     roleids = []
     for r in roleobjs:
         id = r["id"]
@@ -133,11 +133,12 @@ def lookup_role_id(role):
 
 def load_users_from_file(filename):
 
+    # Note that File must contain names (not emails). This is due to BUG LRN-4411.
     try:
         file1 = open(filename, "r")
         users = file1.readlines()
         users2 = [i.strip() for i in users]
-        print("users read from file are: " + str(users2))
+        print("Read {} users from the file.".format(len(users2)))
         file1.close()
     except FileNotFoundError as e:
         print(e)
@@ -154,20 +155,20 @@ def load_users_from_file(filename):
 def main():
 
     parser = argparse.ArgumentParser(description="This script adds the given role to the user(s) provided. Existing roles are retained.")
-    parser.add_argument("--role", required=True, help="Name of Security Labs role to be added")
-    parser.add_argument("--user", required=False, help="User's full name or email address.")
-    parser.add_argument("--user_file", required=False, help="Text file with list of user names or email addresses in a single column.")
+    parser.add_argument("--role", required=True, help="Name of Security Labs role to be added.")
+    parser.add_argument("--user", required=False, help="Target user's name within Security Labs. Use only if adding role to a single user.")
+    parser.add_argument("--file", required=False, help="Text file containing names of target users in a single column. Use when adding role to multiple users.")
     
     args = parser.parse_args()
 
-    # Check that --user or --user_file was provided
-    if ("--user" not in sys.argv) and ("--user_file" not in sys.argv):
-        print("Error: You must provide either --user or --user_file.")
+    # Check that --user or --file was provided
+    if ("--user" not in sys.argv) and ("--file" not in sys.argv):
+        print("Error: You must provide either --user or --file.")
         return   
 
     # Check that both options weren't provided
-    if ("--user" in sys.argv) and ("--user_file" in sys.argv):
-        print("Error: --user and --user_file are mutually exclusive.")
+    if ("--user" in sys.argv) and ("--file" in sys.argv):
+        print("Error: --user and --file are mutually exclusive.")
         return   
 
     # Get auth string (key:secret) from environment variable
@@ -181,7 +182,7 @@ def main():
     # Create the list of users to update
     role = args.role.strip()
     theuser = args.user.strip() if args.user is not None else None
-    filename = args.user_file.strip() if args.user_file is not None else None
+    filename = args.file.strip() if args.file is not None else None
     user_list = [ theuser ] if theuser is not None else load_users_from_file(filename.strip())
 
     # Add role to the user(s)
