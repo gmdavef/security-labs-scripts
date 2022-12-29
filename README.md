@@ -42,7 +42,7 @@ This script returns a list of relevant labs for the given keyword or phrase.
 
 `find_labs_for_keyword.py [-h] --keyword KEYWORD [--format FORMAT]`
 
-NOTE: Valid values for ```--format``` are JSON and CSV. The default is JSON.
+NOTE: ```--format``` is optional and indicates the output format. Valid values are JSON and CSV. The default is JSON.
 
 **Examples**
 ```
@@ -72,7 +72,7 @@ This script returns the list of users for a given role.
 
 `get_users_for_role.py [-h] --role ROLE [--format FORMAT]`
 
-NOTE: ```--role``` specifies the role (exact case required). ```--format``` indicates the output format. Valid values are JSON and CSV. The default is JSON.
+NOTE: ```--role``` specifies the role (exact case required). ```--format``` is optional and indicates the output format. Valid values are JSON and CSV. The default is JSON.
 
 **Examples**
 ```
