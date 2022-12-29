@@ -152,8 +152,8 @@ def load_users_from_file(filename):
 
 
 def main():
+
     parser = argparse.ArgumentParser(description="This script adds the given role to the user(s) provided. Existing roles are retained.")
-    
     parser.add_argument("--role", required=True, help="Name of Security Labs role to be added")
     parser.add_argument("--user", required=False, help="User's full name or email address.")
     parser.add_argument("--user_file", required=False, help="Text file with list of user names or email addresses in a single column.")

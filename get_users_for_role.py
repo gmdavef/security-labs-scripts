@@ -25,11 +25,9 @@ def get_users(role, output_format):
     
     # Invoke Get Users Details with roleIds parameter. Max is 50 users at a time.  
     # TODO: add code to handle pagination
-    print("Searching users for role ID of: " + role_id)
     baseurl = "https://securitylabs.veracode.com/api/users/details?limit=50&page=%s&roleIds=" + role_id
     url = baseurl % str(page_count)
     hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
-
     try:
         response = requests.get(url, headers=hdrs)
         if invalid_creds_str in response.text:
@@ -43,19 +41,25 @@ def get_users(role, output_format):
     thisdict = json.loads(response.text)
     these_users = thisdict["users"]
 
-    for data in these_users:
-        all_users.append(json.dumps(data))
+    for user in these_users:
+        # Remove superfluous data elements, keep the 3 we need
+        uid = user["id"]
+        uemail = user["email"]
+        uname = user["name"]
+        user.clear()
+        user.update({"id": uid})
+        user.update({"email": uemail})
+        user.update({"name": uname})
+        all_users.append(json.dumps(user))
 
     # Add this set of users to the overall list
-    
-    print("Total number of users is " + str(len(all_users)))
+    # print("Total number of users is " + str(len(all_users)))
     for i, data in enumerate(all_users):
         final_json = final_json + str(data)
         if i != len(all_users) - 1: 
             final_json = final_json + ","
             
     final_json = final_json + "]}"
-
     send_output(final_json, output_format)
 
     return len(all_users)
@@ -66,10 +70,12 @@ def send_output(json_str, format):
     if (format == "JSON"):
         print(json_str)
     elif (format == "CSV"):
-        # output to 3 column tabular format
-        print("csv output will be here")
-        
-
+        # output to 3 column csv format - NAME, EMAIL, ID
+        thisdict = json.loads(json_str)
+        these_users = thisdict["users"]
+        for user in these_users:
+            print(user["name"], user["email"], user["id"], sep=", ")
+            
 
 def lookup_role_id(role):
 
@@ -92,7 +98,6 @@ def lookup_role_id(role):
     for r in thisdict:
         id = r["id"]
         name = r["name"]
-        # print("name=" + name + ", id=" + id)
         if name == role:
             return id
     
@@ -127,8 +132,6 @@ def main():
 
     # Retrieve the users for the role
     count = get_users(role, format)
-
-    print("Found {} users with that role.".format(count))
    
  
 if __name__=="__main__":

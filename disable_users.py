@@ -101,8 +101,8 @@ def load_users_from_file(filename):
 
 
 def main():
+
     parser = argparse.ArgumentParser(description="This script disables the user(s) provided.")
-    
     parser.add_argument("--user", required=False, help="User's full name or email address.")
     parser.add_argument("--user_file", required=False, help="Text file with list of user names or email addresses in a single column.")
     

@@ -63,6 +63,7 @@ def get_all_lessons():
     print(final_json)
 
 def main():
+    
     parser = argparse.ArgumentParser(description="This script retrieves all labs that are assigned in live campaigns, including labs for assignments that haven't started yet.")
 
     # Get auth string (key:secret) from environment variable
