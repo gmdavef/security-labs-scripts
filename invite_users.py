@@ -58,13 +58,13 @@ def create_invitations(user_list, invited_by, send_email):
             
             code = response.status_code
             if code == 200:
-                print("Resp code is 200. User invited.")
+                print("Resp code is 200. User invited. Email sent:" + str(send_email))
                 num_invited += 1
             elif code == 500:
                 # Need this because the API currently returns 500 with message "unknown error" when invite is successfully created.
                 # BUG LRN-4424 was opened for this.
                 if "unknown error" in response.text:
-                    print("Resp code is 500, but user invited.")
+                    print("Resp code is 500, but user invited. Email sent:" + str(send_email))
                     num_invited += 1                
             elif code == 400:
                 # Check body for "Sender ID is invalid" or "Email is invalid"

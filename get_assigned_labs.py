@@ -23,7 +23,6 @@ def get_all_labs():
 
     while True:
 
-        # Sanity check
         if page_count>=100:
             print("We made 100 API calls! Stopping because that's unexpected.")
             break    
@@ -62,6 +61,7 @@ def get_all_labs():
     final_json = final_json + "]}"
     print(final_json)
 
+
 def main():
     
     parser = argparse.ArgumentParser(description="This script retrieves all labs that are assigned in live campaigns, including labs for assignments that haven't started yet. Output is in JSON format.")
@@ -75,6 +75,7 @@ def main():
         sys.exit(1)
 
     get_all_labs()
- 
+
+
 if __name__=="__main__":
     main()  

@@ -31,7 +31,7 @@ def disable_user(user_list):
                 print("Updating user...")
                 response = requests.put(url, headers=hdrs, json=req_body)
                 code = response.status_code
-                print("response code is: " + str(code))                 
+                # print("response code is: " + str(code))                 
                 if code == 200:
                     num_updated += 1
             except requests.RequestException as e:
@@ -86,7 +86,7 @@ def load_users_from_file(filename):
         file1 = open(filename, "r")
         users = file1.readlines()
         users2 = [i.strip() for i in users]
-        print("users read from file are: " + str(users2))
+        print("Read {} users from the file.".format(len(users2)))        
         file1.close()
     except FileNotFoundError as e:
         print(e)
@@ -103,20 +103,20 @@ def load_users_from_file(filename):
 def main():
 
     parser = argparse.ArgumentParser(description="This script disables the user(s) provided.")
-    parser.add_argument("--user", required=False, help="User's full name or email address.")
-    parser.add_argument("--user_file", required=False, help="Text file with list of user names or email addresses in a single column.")
+    parser.add_argument("--user", required=False, help="Target user's name within Security Labs. Use only if disabling a single user.")
+    parser.add_argument("--file", required=False, help="Text file containing names of target users in a single column. Use when disabling multiple users.")
     
     args = parser.parse_args()
 
-    # Ensure that either --user or --user_file was provided
-    if ("--user" not in sys.argv) and ("--user_file" not in sys.argv):
-        print("Error: You must provide either --user or --user_file.")
-        return
-        
-    # Ensure that both options weren't provided
-    if ("--user" in sys.argv) and ("--user_file" in sys.argv):
-        print("Error: --user and --user_file are mutually exclusive.")
-        return              
+    # Check that --user or --file was provided
+    if ("--user" not in sys.argv) and ("--file" not in sys.argv):
+        print("Error: You must provide either --user or --file.")
+        return   
+
+    # Check that both options weren't provided
+    if ("--user" in sys.argv) and ("--file" in sys.argv):
+        print("Error: --user and --file are mutually exclusive.")
+        return               
 
     # Get auth string (key:secret) from environment variable
     try:
@@ -128,7 +128,7 @@ def main():
     
     # Create the list of users to disable    
     theuser = args.user.strip() if args.user is not None else None
-    filename = args.user_file.strip() if args.user_file is not None else None
+    filename = args.file.strip() if args.file is not None else None
     user_list = [ theuser ] if theuser is not None else load_users_from_file(filename.strip())
    
     # Disable the user(s)
