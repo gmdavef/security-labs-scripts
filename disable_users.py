@@ -123,7 +123,7 @@ def main():
         global auth_str 
         auth_str = os.environ["SECLABS_API_AUTH"]
     except KeyError as err:
-        print(f"Error: Required enironment variable not found - {err}")
+        print(f"Error: Required environment variable not found - {err}")
         return
     
     # Create the list of users to disable    
@@ -140,6 +140,7 @@ def main():
         print("Done! Disabled {} users.".format(count))
     else:
         print("No users were disabled.")    
- 
+
+
 if __name__=="__main__":
     main()  

@@ -14,51 +14,62 @@ invalid_creds_str = "ApiCredential missing"
 
 def get_users(role, output_format):
 
-    final_json = '{ "users": ['
-    all_users = []
-    page_count = 0
-
-    # Find the role ID for the given role name
+    # Get the role ID for the given role name
     role_id = lookup_role_id(role)
     if role_id is None:
         return 0
     
-    # Invoke Get Users Details with roleIds parameter. Max is 50 users at a time.  
-    # TODO: add code to handle pagination
+    # Initialize some variables
+    page_count = 0
+    all_users = []
+    final_json = '{ "users": ['
+
+    # Hard-code limit to 50, which is the max number allowed by the API.
     baseurl = "https://securitylabs.veracode.com/api/users/details?limit=50&page=%s&roleIds=" + role_id
-    url = baseurl % str(page_count)
     hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
-    try:
-        response = requests.get(url, headers=hdrs)
-        if invalid_creds_str in response.text:
-            print("Invalid API credentials. Check your SECLABS_API_AUTH environment variable.")
-            return None     
-    except requests.RequestException as e:
-        print("Exception calling Get Users Details API!")
-        print(e)
-        sys.exit(1)
 
-    thisdict = json.loads(response.text)
-    these_users = thisdict["users"]
+    while True:
 
-    for user in these_users:
-        # Remove superfluous data elements, keep the 3 we need
-        uid = user["id"]
-        uemail = user["email"]
-        uname = user["name"]
-        user.clear()
-        user.update({"id": uid})
-        user.update({"email": uemail})
-        user.update({"name": uname})
-        all_users.append(json.dumps(user))
+        if page_count>=100:
+            print("We made 100 API calls! Stopping because that's much more than expected.")
+            break
 
-    # Add this set of users to the overall list
-    # print("Total number of users is " + str(len(all_users)))
+        # Set the page num in the URL string and do the Get Users Details API call. 
+        url = baseurl % str(page_count)
+        try:
+            response = requests.get(url, headers=hdrs)
+        except requests.RequestException as e:
+            print("Exception calling Get Users Details API!")
+            print(e)
+            sys.exit(1)
+
+        jsonObj = json.loads(response.text)
+        these_users = jsonObj["users"]
+
+        for user in these_users:
+            # Remove superfluous data elements, keep the 3 we need
+            uid = user["id"]
+            uemail = user["email"]
+            uname = user["name"]
+            user.clear()
+            user.update({"id": uid})
+            user.update({"email": uemail})
+            user.update({"name": uname})
+            all_users.append(json.dumps(user))
+
+        # If this is the last page of data, nextUrl under pages will be null
+        pagesObj =  jsonObj["pages"]
+        if (pagesObj is None or pagesObj["nextUrl"] is None):
+            break
+
+        page_count += 1
+
+    # Add all users to the final json string
     for i, data in enumerate(all_users):
         final_json = final_json + str(data)
-        if i != len(all_users) - 1: 
+        if (i != len(all_users)-1): 
             final_json = final_json + ","
-            
+
     final_json = final_json + "]}"
     send_output(final_json, output_format)
 
@@ -119,7 +130,7 @@ def main():
         global auth_str 
         auth_str = os.environ["SECLABS_API_AUTH"]
     except KeyError as err:
-        print(f"Error: Required enironment variable not found - {err}")
+        print(f"Error: Required environment variable not found - {err}")
         return
     
     format = "JSON"
@@ -132,6 +143,8 @@ def main():
 
     # Retrieve the users for the role
     count = get_users(role, format)
+    if count==0 and format=="CSV":
+        print("No users found with that role.")
    
  
 if __name__=="__main__":

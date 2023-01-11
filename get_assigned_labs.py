@@ -5,7 +5,7 @@ import argparse
 import json
 
 #
-# This retrieves all labs that are assigned in live campaigns, including labs for assignments that haven't started yet
+# This script retrieves all labs that are assigned in live campaigns, including labs for assignments that haven't started yet
 #
 
 auth_str = ""
@@ -14,20 +14,22 @@ invalid_creds_str = "ApiCredential missing"
 
 def get_all_labs():
 
-    baseurl = "https://securitylabs.veracode.com/api/lessons?limit=50&page=%s"
-    hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
-      
+    # Initialize some variables
     final_json = '{ "lessons": ['
     all_labs = []
     page_count = 0
 
+    # Hard-code limit to 50, which is the max number allowed by the API.
+    baseurl = "https://securitylabs.veracode.com/api/lessons?limit=50&page=%s"
+    hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
+
     while True:
 
         if page_count>=100:
-            print("We made 100 API calls! Stopping because that's unexpected.")
+            print("We made 100 API calls! Stopping because that's much more than expected.")
             break    
         
-        # Set the page # in the URL string and do the Get Lessons API call
+        # Set the page num in the URL string and do the Get Lessons API call
         url = baseurl % str(page_count)
         try:
             response = requests.get(url, headers=hdrs)
@@ -71,7 +73,7 @@ def main():
         global auth_str 
         auth_str = os.environ['SECLABS_API_AUTH']
     except KeyError as err:
-        print(f"Required enironment variable not found! - {err}")
+        print(f"Required environment variable not found! - {err}")
         sys.exit(1)
 
     get_all_labs()

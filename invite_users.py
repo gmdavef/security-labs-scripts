@@ -196,7 +196,7 @@ def main():
         global auth_str 
         auth_str = os.environ["SECLABS_API_AUTH"]
     except KeyError as err:
-        print(f"Error: Required enironment variable not found - {err}")
+        print(f"Error: Required environment variable not found - {err}")
         return
 
     # Invite the user(s)
