@@ -24,32 +24,42 @@ def get_labs(keyword, output_format):
     encoded_keyword = urllib.parse.quote(keyword)
     baseurl = "https://securitylabs.veracode.com/api/lessons/search?limit=50&page=%s&phrase=" % str(page_count)
     url = baseurl + encoded_keyword
-    # print("Invoking url: " + url)
     hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
-
     try:
         response = requests.get(url, headers=hdrs)
         if invalid_creds_str in response.text:
             print("Invalid API credentials. Check your SECLABS_API_AUTH environment variable.")
-            return None     
+            return 0
+        
+        # If not a 200 response, print message and return
+        code = response.status_code
+        if code != 200:
+            print("Response code is: " + str(code))
+            print("Response body is: " + response.text)
+            return 0
+
     except requests.RequestException as e:
         print("Exception calling Get Lessons By Topic API!")
         print(e)
-        sys.exit(1)
+        return 0
 
     thisdict = json.loads(response.text)
     these_labs = thisdict["lessons"]
 
-    for data in these_labs:
-        all_labs.append(json.dumps(data))
+    if len(these_labs)==0:
+        return 0
+    else:
+        for data in these_labs:
+            all_labs.append(json.dumps(data))
 
-    # Add this set of labs to the overall list
-    for i, data in enumerate(all_labs):
-        final_json = final_json + str(data)
-        if i != len(all_labs) - 1: 
-            final_json = final_json + ","
+        # Add this set of labs to the overall list
+        for i, data in enumerate(all_labs):
+            final_json = final_json + str(data)
+            if i != len(all_labs) - 1: 
+                final_json = final_json + ","
             
-    final_json = final_json + "]}"
+        final_json = final_json + "]}"
+
 
     send_output(final_json, output_format)
 
@@ -58,16 +68,22 @@ def get_labs(keyword, output_format):
 
 def send_output(json_str, format):
 
-    if (format == "JSON"):
-        print(json_str)
-    elif (format == "CSV"):
-        # output to 4 column CSV format (LAB NAME, lesson | challenge, LAB LANGUAGE, LAB URL)
-        thisdict = json.loads(json_str)
-        these_labs = thisdict["labs"]
-        for lab in these_labs:
-            title_str = str(lab["title"]).replace(",", "")
-            type_str = "challenge" if lab["challenge"]==True else "lesson"
-            print(title_str, type_str, lab["stack"], lab["url"], sep=", ")
+    thisdict = json.loads(json_str)
+    these_labs = thisdict["labs"]
+
+    if len(these_labs)>0:
+
+        if (format == "JSON"):
+            # output json string we already have
+            print(json_str)
+        elif (format == "CSV"):
+            # output to 4 column CSV format, with a header row
+            print("LAB NAME", "LAB TYPE", "LANGUAGE", "URL OF LAB", sep=", ")
+            for lab in these_labs:
+                # remove any commas from lab name 
+                title_str = str(lab["title"]).replace(",", "")
+                type_str = "challenge" if lab["challenge"]==True else "lesson"
+                print(title_str, type_str, lab["stack"], lab["url"], sep=", ")
         
 
 def main():
@@ -87,16 +103,21 @@ def main():
         print(f"Error: Required environment variable not found - {err}")
         return
     
+    if len(keyword)<=1:
+        print("Error: The keyword provided must be at least 2 characters")
+        return
+
     format = "JSON"
     if ("--format" in sys.argv):
-        format = args.format
+        format = args.format.upper()
 
     if (format not in ["JSON", "CSV"]):
         print("Error: --format must be JSON or CSV")
         return
 
     count = get_labs(keyword, format)
-    # print("Found {} labs for that keyword.".format(count))
+    if count==0:
+        print("No labs found for '" + keyword + "'")
    
  
 if __name__=="__main__":
