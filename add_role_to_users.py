@@ -10,7 +10,7 @@ import json
 
 auth_str = ""
 user_agent_str = "SecLabs Python script"
-invalid_creds_str = "ApiCredential missing"
+invalid_creds_str = "ApiCredential"
 
 def add_role(role, user_list):
 
@@ -194,6 +194,7 @@ def main():
         print("Done! Added role to {} users.".format(count))
     else:
         print("No users updated.")    
- 
+
+
 if __name__=="__main__":
     main()  

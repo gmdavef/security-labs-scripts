@@ -10,7 +10,7 @@ import json
 
 auth_str = ""
 user_agent_str = "SecLabs Python script"
-invalid_creds_str = "ApiCredential missing"
+invalid_creds_str = "ApiCredential"
 
 def disable_user(user_list):
 
