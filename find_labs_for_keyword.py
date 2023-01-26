@@ -11,56 +11,68 @@ import urllib.parse
 
 auth_str = ""
 user_agent_str = "SecLabs Python script"
-invalid_creds_str = "ApiCredential missing"
+invalid_creds_str = "ApiCredential"
 
 def get_labs(keyword, output_format):
 
-    final_json = '{ "labs": ['
-    all_labs = []
     page_count = 0
+    all_labs = []
+    final_json = '{ "labs": ['
 
-    # Invoke Get Lessons By Topic with phrase parameter. Max is 50 labs at a time.  
-    # TODO: add code to handle pagination
+    # Hard-code limit to 50, which is the max number allowed by the API.  
     encoded_keyword = urllib.parse.quote(keyword)
-    baseurl = "https://securitylabs.veracode.com/api/lessons/search?limit=50&page=%s&phrase=" % str(page_count)
-    url = baseurl + encoded_keyword
+    baseurl = "https://securitylabs.veracode.com/api/lessons/search?limit=50&phrase=" + encoded_keyword
     hdrs = {"User-Agent": user_agent_str, "auth": auth_str}
-    try:
-        response = requests.get(url, headers=hdrs)
-        if invalid_creds_str in response.text:
-            print("Invalid API credentials. Check your SECLABS_API_AUTH environment variable.")
+
+    while True:
+
+        if page_count>=50:
+            print("We made 50 API calls! Stopping because that's much more than expected.")
+            break
+
+        # Set the page num in the URL string and do the Get Lessons by Topic API call.
+        url = baseurl + "&page=" + str(page_count)
+        try:
+            response = requests.get(url, headers=hdrs)
+            # Check for non-200 response
+            code = response.status_code
+            if code != 200:
+                if invalid_creds_str in response.text:
+                    print("Invalid API credentials. Check your SECLABS_API_AUTH environment variable.")
+                    sys.exit(1)
+                else:
+                    print("Response code is: " + str(code))
+                    print("Response body is: " + response.text)
+                    sys.exit(1)
+
+        except requests.RequestException as e:
+            print("Exception calling Get Lessons By Topic API!")
+            print(e)
+            sys.exit(1)
+
+        jsonObj = json.loads(response.text)
+        these_labs = jsonObj["lessons"]
+
+        if page_count==0 and len(these_labs)==0:
             return 0
-        
-        # If not a 200 response, print message and return
-        code = response.status_code
-        if code != 200:
-            print("Response code is: " + str(code))
-            print("Response body is: " + response.text)
-            return 0
+        else:
+            for data in these_labs:
+                all_labs.append(json.dumps(data))
 
-    except requests.RequestException as e:
-        print("Exception calling Get Lessons By Topic API!")
-        print(e)
-        return 0
+        # If this is the last page of data, nextUrl under pages will be null
+        pagesObj =  jsonObj["pages"]
+        if (pagesObj is None or pagesObj["nextUrl"] is None):
+            break
 
-    thisdict = json.loads(response.text)
-    these_labs = thisdict["lessons"]
+        page_count += 1
 
-    if len(these_labs)==0:
-        return 0
-    else:
-        for data in these_labs:
-            all_labs.append(json.dumps(data))
+    # Add all labs to the final json string
+    for i, data in enumerate(all_labs):
+        final_json = final_json + str(data)
+        if i != len(all_labs) - 1: 
+            final_json = final_json + ","
 
-        # Add this set of labs to the overall list
-        for i, data in enumerate(all_labs):
-            final_json = final_json + str(data)
-            if i != len(all_labs) - 1: 
-                final_json = final_json + ","
-            
-        final_json = final_json + "]}"
-
-
+    final_json = final_json + "]}"
     send_output(final_json, output_format)
 
     return len(all_labs)
@@ -78,7 +90,7 @@ def send_output(json_str, format):
             print(json_str)
         elif (format == "CSV"):
             # output to 4 column CSV format, with a header row
-            print("LAB NAME", "LAB TYPE", "LANGUAGE", "URL OF LAB", sep=", ")
+            print("LAB NAME", "LAB TYPE", "LANGUAGE", "LAB URL", sep=", ")
             for lab in these_labs:
                 # remove any commas from lab name 
                 title_str = str(lab["title"]).replace(",", "")
