@@ -91,7 +91,7 @@ This script returns the list of users for a given role.
 ```
 
 ## invite_users.py ##
-This script invites people to join Security Labs. Invited users are automatically assigned the default role(s).
+This script invites people to join Security Labs. Invited users are automatically assigned the default role(s). Use with standalone accounts, not platform-integrated accounts. Otherwise it can result in orphaned users.
 
 **Usage**
 
