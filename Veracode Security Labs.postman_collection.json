@@ -1,0 +1,831 @@
+{
+	"info": {
+		"_postman_id": "0a1d223f-0fb5-4af7-ac47-85fdae34c0cf",
+		"name": "Veracode Security Labs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1811300"
+	},
+	"item": [
+		{
+			"name": "getUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/users",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUsersDetails",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/users/details",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"details"
+					],
+					"query": [
+						{
+							"key": "roleIds",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "phrase",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "50",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserProgress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/users/:id/progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"users",
+						":id",
+						"progress"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteUser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/users/:id",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "putUser",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"roleIds\": [\"roleID1\", \"roleID2\"]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/users/:id",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getOnboarding",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/onboarding",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"onboarding"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "campaignIds",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getCampaignsProgress",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept-encoding": true,
+					"connection": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/campaigns/progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"campaigns",
+						"progress"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50",
+							"description": "Limits # of users returned",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "assignmentIds",
+							"value": "",
+							"description": "Comma separated list of assignment IDs to narrow results",
+							"disabled": true
+						},
+						{
+							"key": "roleIds",
+							"value": "",
+							"description": "Comma separated list of role IDs to narrow results",
+							"disabled": true
+						},
+						{
+							"key": "phrase",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "campaignIds",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEngagementTime",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/engagement/time",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"engagement",
+						"time"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "roleIds",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "campaignIds",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getProgress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"progress"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "10",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getLessons",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				},
+				"disableCookies": true,
+				"maxRedirects": 2
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/lessons",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"lessons"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getLessonProgress",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true,
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/lessons/:id/progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"lessons",
+						":id",
+						"progress"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getLessonsByTopic",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/lessons/search?limit=50&page=0&phrase=CWE-117",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"lessons",
+						"search"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "50"
+						},
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "phrase",
+							"value": "CWE-117"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRoles",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"connection": true,
+					"accept-encoding": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/roles",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRoleProgress",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseurl}}/api/roles/:id/progress",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"roles",
+						":id",
+						"progress"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sendInvites",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept-encoding": true,
+					"connection": true,
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "auth",
+						"value": "{{keysecret}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n  \"email\": \"email address\",\n  \"name\": \"user name\",\n  \"senderId\": \"sender id\",\n  \"sendEmail\": true\n}"
+				},
+				"url": {
+					"raw": "{{baseurl}}/api/invites",
+					"host": [
+						"{{baseurl}}"
+					],
+					"path": [
+						"api",
+						"invites"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "keysecret",
+			"value": "key:secret"
+		},
+		{
+			"key": "baseurl",
+			"value": "https://securitylabs.veracode.com",
+			"type": "string"
+		}
+	]
+}
